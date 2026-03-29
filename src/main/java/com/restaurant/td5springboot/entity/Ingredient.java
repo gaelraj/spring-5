@@ -1,0 +1,41 @@
+package com.restaurant.td5springboot.entity;
+
+public class Ingredient {
+
+    private int id;
+    private String name;
+    private double price;
+    private CategoryEnum category;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public CategoryEnum getCategory() {
+        return category;
+    }
+
+    public void setCategory(CategoryEnum category) {
+        this.category = category;
+    }
+}
