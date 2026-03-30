@@ -1,13 +1,13 @@
 package com.restaurant.td5springboot.repository;
 
-import com.restaurant.td5springboot.entity.CategoryEnum;
-import com.restaurant.td5springboot.entity.Ingredient;
+import com.restaurant.td5springboot.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 
 @Repository
@@ -55,6 +55,29 @@ public class IngredientRepository {
         } catch (DataAccessException e) {
             throw new RuntimeException("Ingredient.id=" + idIngredient + " is not found");
         }
+    }
+
+    public StockValue findStockValueAt(int idIngredient, Instant at) {
+        String sql = """
+                select unit,
+                sum(
+                    case 
+                        when type = 'IN' then quantity
+                        else -quantity
+                    end 
+                ) as current_stock
+                from stockmovement
+                where id_ingredient = ?
+                    and creation_datetime <= ?
+                group by unit
+                """;
+
+        return jdbcTemplate.queryForObject(sql,(rs, rowNum) -> {
+            StockValue stockValue = new StockValue();
+            stockValue.setQuantity(rs.getDouble("current_stock"));
+            stockValue.setUnit(Unit.valueOf(rs.getString("unit")));
+            return stockValue;
+        }, idIngredient, Timestamp.from(at));
     }
 
 }

@@ -39,6 +39,29 @@ public class IngredientController {
         }
     }
 
+    @GetMapping("/ingredients/{id}/stock")
+    public ResponseEntity<?> getByIdAt(
+            @PathVariable("id") int idIngredient,
+            @RequestParam(required = false) String at,
+            @RequestParam(required = false) String unit) {
+
+        if (at == null || unit == null) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body("Either mandatory query parameter `at` or `unit` is not provided.");
+        }
+
+        try {
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(ingredientService.getStockIngredientByIdAt(idIngredient, at, unit));
+        } catch (RuntimeException e) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(e.getMessage());
+        }
+    }
+
 
 
 }
