@@ -4,12 +4,12 @@ public class Ingredient {
 
     private int id;
     private String name;
-    private double price;
+    private Double price;
     private CategoryEnum category;
 
     public Ingredient() {}
 
-    public Ingredient(int id, String name, double price, CategoryEnum category) {
+    public Ingredient(int id, String name, Double price, CategoryEnum category) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -32,7 +32,7 @@ public class Ingredient {
         this.name = name;
     }
 
-    public double getPrice() {
+    public Double getPrice() {
         return price;
     }
 

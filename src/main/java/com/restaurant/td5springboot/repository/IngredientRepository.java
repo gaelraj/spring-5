@@ -6,6 +6,8 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Array;
+import java.sql.Connection;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
@@ -78,6 +80,25 @@ public class IngredientRepository {
             stockValue.setUnit(Unit.valueOf(rs.getString("unit")));
             return stockValue;
         }, idIngredient, Timestamp.from(at));
+    }
+
+    public List<Ingredient> findAllByIds(List<Integer> ids) {
+        String sql = """
+            SELECT id, name, price, category
+            FROM Ingredient
+            WHERE id = ANY(?)
+            """;
+
+        Array array = jdbcTemplate.execute((Connection con) ->
+                con.createArrayOf("integer",
+                        ids.toArray()));
+
+        return jdbcTemplate.query(sql, (rs, rowNum) -> new Ingredient(
+                rs.getInt("id"),
+                rs.getString("name"),
+                rs.getDouble("price"),
+                CategoryEnum.valueOf(rs.getString("category"))
+        ), array);
     }
 
 }
