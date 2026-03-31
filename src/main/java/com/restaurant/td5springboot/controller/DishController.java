@@ -23,6 +23,25 @@ public class DishController {
                 .body(dishService.getAllDishes());
     }
 
+    @GetMapping("/dishes/{id}/ingredients")
+    public ResponseEntity<?> getIngredientsByDishId(
+            @PathVariable int id,
+            @RequestParam(required = false) String ingredientName,
+            @RequestParam(required = false) Double ingredientPriceAround) {
+
+        try {
+            List<Ingredient> ingredients = dishService.getIngredientsByDishId(id, ingredientName, ingredientPriceAround);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(ingredients);
+
+        } catch (RuntimeException e) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(e.getMessage());
+        }
+    }
+
     @PutMapping("/dishes/{id}/ingredients")
     public ResponseEntity<?> updateIngredients(
             @PathVariable int id,

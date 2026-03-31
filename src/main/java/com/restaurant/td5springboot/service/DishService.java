@@ -36,4 +36,11 @@ public class DishService {
         return dishRepository.updateIngredients(dishId, existingIngredients);
     }
 
+    public List<Ingredient> getIngredientsByDishId(int dishId, String ingredientName, Double ingredientPriceAround) {
+
+        dishRepository.findById(dishId);
+
+        return dishRepository.findIngredientsByDishId(dishId, ingredientName, ingredientPriceAround);
+    }
+
 }

@@ -141,5 +141,57 @@ public class DishRepository {
         }
     }
 
+    public List<Ingredient> findIngredientsByDishId(int dishId, String ingredientName, Double ingredientPriceAround) {
 
+        StringBuilder sql = new StringBuilder("""
+            SELECT i.id, i.name, i.price, i.category
+            FROM Ingredient i
+            JOIN DishIngredient di ON i.id = di.id_ingredient
+            WHERE di.id_dish = ?
+            """);
+
+        // filtre optionnel ingredientName
+        if (ingredientName != null) {
+            sql.append(" AND i.name ILIKE ?");
+        }
+
+        // filtre optionnel ingredientPriceAround
+        if (ingredientPriceAround != null) {
+            sql.append(" AND i.price BETWEEN ? AND ?");
+        }
+
+        List<Ingredient> ingredients = new ArrayList<>();
+
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql.toString())) {
+
+            int paramIndex = 1;
+            ps.setInt(paramIndex++, dishId);
+
+            if (ingredientName != null) {
+                ps.setString(paramIndex++, "%" + ingredientName + "%");
+            }
+
+            if (ingredientPriceAround != null) {
+                ps.setDouble(paramIndex++, ingredientPriceAround - 50);
+                ps.setDouble(paramIndex++, ingredientPriceAround + 50);
+            }
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Ingredient ingredient = new Ingredient();
+                    ingredient.setId(rs.getInt("id"));
+                    ingredient.setName(rs.getString("name"));
+                    ingredient.setPrice(rs.getDouble("price"));
+                    ingredient.setCategory(CategoryEnum.valueOf(rs.getString("category")));
+                    ingredients.add(ingredient);
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return ingredients;
+    }
 }
