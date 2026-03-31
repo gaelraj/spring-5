@@ -150,12 +150,10 @@ public class DishRepository {
             WHERE di.id_dish = ?
             """);
 
-        // filtre optionnel ingredientName
         if (ingredientName != null) {
             sql.append(" AND i.name ILIKE ?");
         }
 
-        // filtre optionnel ingredientPriceAround
         if (ingredientPriceAround != null) {
             sql.append(" AND i.price BETWEEN ? AND ?");
         }

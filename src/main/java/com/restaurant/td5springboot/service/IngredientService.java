@@ -1,7 +1,6 @@
 package com.restaurant.td5springboot.service;
 
 import com.restaurant.td5springboot.entity.Ingredient;
-import com.restaurant.td5springboot.entity.MovementTypeEnum;
 import com.restaurant.td5springboot.entity.StockValue;
 import com.restaurant.td5springboot.entity.Unit;
 import com.restaurant.td5springboot.repository.IngredientRepository;
@@ -10,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Locale;
 
 @Service
 public class IngredientService {
